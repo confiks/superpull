@@ -2,7 +2,7 @@
 
 This script will `git clone` all repositories from a Github user or organization, and keep them updated with `git pull --ff-only`. It is intended to be run in a folder that contains exlusively the repositories from that user or organisation. 
 
-* Specific repositories can be ignored by added their names as lines to a `.superpull_ignore` file. 
+* Specific repositories can be ignored by adding their names as lines to a `.superpull_ignore` file. 
 * Repositories will only be updated if `.git/FETCH_HEAD` is older than three days, and the `pushed_at` time of the Github API result is newer than `.git/FETCH_HEAD`. See `stale_repository_criterium`.
 
 #### Usage

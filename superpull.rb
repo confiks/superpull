@@ -42,7 +42,7 @@ ignored_repository_names = []
 
 if File.exists?(ignore_file_name)
 	ignore_file = File.open(ignore_file_name)
-	ignored_repository_names = ignore_file.read.split("\n") & repository_names 
+	ignored_repository_names = ignore_file.read.split("\n").map(&:strip) & repository_names 
 	ignore_file.close
 end
 
