@@ -54,7 +54,7 @@ if unrecognized_git_subdirs.length > 0
 	puts "\nWarning: found local repositories that do not have a corresponding remote repository: #{unrecognized_git_subdirs.join(", ")}"
 end
 
-puts "\nFound #{repository_names.length} repositories through Git API. Ignored #{ignored_repository_names.length} through #{ignore_file_name}."
+puts "\nFound #{repository_names.length} repositories through Github API. Ignored #{ignored_repository_names.length} through #{ignore_file_name}."
 if new_repository_names.length > 0
 	puts "There are #{new_repository_names.length} new repositories to clone: #{new_repository_names.join(", ")}."
 else
