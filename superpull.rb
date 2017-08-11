@@ -7,6 +7,7 @@ require "active_support"
 require "active_support/core_ext"
 
 stale_repository_criterium = 3.days.ago
+ignore_file_name = ".superpull_ignore"
 
 if ARGV.length != 2 || !["user", "org"].include?(ARGV[0])
 	abort "Usage: ./superpull.rb [user|org] [name]"
@@ -40,8 +41,15 @@ loop do
 end
 
 repository_names = repository_lookup.keys
-new_repository_names = repository_names - git_subdirs
+ignored_repository_names = []
 
+if File.exists?(ignore_file_name)
+	ignore_file = File.open(ignore_file_name)
+	ignored_repository_names = ignore_file.read.split("\n") & repository_names 
+	ignore_file.close
+end
+
+new_repository_names = repository_names - git_subdirs - ignored_repository_names
 unrecognized_git_subdirs = git_subdirs - repository_names
 recognized_git_subdirs = git_subdirs - unrecognized_git_subdirs
 
@@ -49,7 +57,7 @@ if unrecognized_git_subdirs.length > 0
 	puts "\nWarning: found local repositories that do not have a corresponding remote repository: #{unrecognized_git_subdirs.inspect}"
 end
 
-puts "\nFound #{repository_names.length} repositories through Git API."
+puts "\nFound #{repository_names.length} repositories through Git API. Ignored #{ignored_repository_names.length}."
 if new_repository_names.length > 0
 	puts "There are #{new_repository_names.length} new repositories to clone: #{new_repository_names.inspect}."
 else
