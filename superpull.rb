@@ -2,15 +2,12 @@
 
 require "open-uri"
 require "json"
-require "byebug"
-require "active_support"
-require "active_support/core_ext"
 
-stale_repository_criterium = 3.days.ago
 ignore_file_name = ".superpull_ignore"
+stale_repository_criterium = Time.now - (3 * 24 * 60 * 60)
 
 if ARGV.length != 2 || !["user", "org"].include?(ARGV[0])
-	abort "Usage: ./superpull.rb [user|org] [name]"
+	abort "Usage: ./superpull.rb [user|org] [account name]"
 end
 
 account_type = ARGV[0]
@@ -21,7 +18,7 @@ git_subdirs = Dir["**/.git"].select{|path| path.count("/") == 1}.map{|path| path
 non_git_subdirs = subdirs - git_subdirs
 
 if non_git_subdirs.length > 0
-	puts "Warning: found #{non_git_subdirs.length} subdirectories that are not git repositories: #{non_git_subdirs.inspect}\n"
+	puts "Warning: found #{non_git_subdirs.length} subdirectories that are not git repositories: #{non_git_subdirs.join(", ")}\n\n"
 end
 
 page = 1
@@ -54,12 +51,12 @@ unrecognized_git_subdirs = git_subdirs - repository_names
 recognized_git_subdirs = git_subdirs - unrecognized_git_subdirs
 
 if unrecognized_git_subdirs.length > 0
-	puts "\nWarning: found local repositories that do not have a corresponding remote repository: #{unrecognized_git_subdirs.inspect}"
+	puts "\nWarning: found local repositories that do not have a corresponding remote repository: #{unrecognized_git_subdirs.join(", ")}"
 end
 
-puts "\nFound #{repository_names.length} repositories through Git API. Ignored #{ignored_repository_names.length}."
+puts "\nFound #{repository_names.length} repositories through Git API. Ignored #{ignored_repository_names.length} through #{ignore_file_name}."
 if new_repository_names.length > 0
-	puts "There are #{new_repository_names.length} new repositories to clone: #{new_repository_names.inspect}."
+	puts "There are #{new_repository_names.length} new repositories to clone: #{new_repository_names.join(", ")}."
 else
 	puts "There are no new repositories to clone."
 end
