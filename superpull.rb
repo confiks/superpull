@@ -28,7 +28,7 @@ loop do
 	uri = "https://api.github.com/#{account_type}s/#{account_name}/repos?per_page=100&page=#{page}"
 	puts "Doing request for: #{uri}"
 
-	api_result = JSON.load(open(uri).read)
+	api_result = JSON.load(URI.open(uri).read)
 	api_result.each do |repo|
 		repository_lookup[repo["name"]] = repo
 	end
